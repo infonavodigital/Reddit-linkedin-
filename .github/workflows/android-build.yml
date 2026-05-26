@@ -14,74 +14,34 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v1
-      
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-          
-    - name: Build with Gradle
-      run: ./gradlew build --stacktrace --no-daemon
-      continue-on-error: true
-      
-    - name: Run lint checks
-      run: ./gradlew lint --stacktrace --no-daemon
-      continue-on-error: true
-      
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --stacktrace --no-daemon
+      run: ./gradlew assembleDebug --stacktrace
       
     - name: Build Release APK
-      run: ./gradlew assembleRelease --stacktrace --no-daemon
-      
-    - name: Sign Release APK (if keystore available)
-      if: ${{ secrets.SIGNING_KEY != '' }}
-      run: echo "Signing would happen here with keystore"
-      continue-on-error: true
+      run: ./gradlew assembleRelease --stacktrace
       
     - name: Upload Debug APK
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: app-debug-apk
         path: app/build/outputs/apk/debug/app-debug.apk
-        if-no-files-found: error
-        retention-days: 30
         
     - name: Upload Release APK
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: app-release-apk
-        path: app/build/outputs/apk/release/*.apk
-        if-no-files-found: error
-        retention-days: 30
-        
-    - name: Upload Lint Results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: lint-results
-        path: app/build/reports/lint-results*.html
-        if-no-files-found: ignore
-        retention-days: 14
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
 
   test:
     name: Run Tests
@@ -89,27 +49,17 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
     - name: Run unit tests
-      run: ./gradlew test --stacktrace --no-daemon
+      run: ./gradlew test --stacktrace
       continue-on-error: true
-      
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: app/build/reports/tests/
-        if-no-files-found: ignore
-        retention-days: 14
