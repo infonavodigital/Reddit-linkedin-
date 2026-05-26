@@ -25,13 +25,11 @@ fun VoteButtons(
     modifier: Modifier = Modifier,
     vertical: Boolean = true
 ) {
-    val arrangement = if (vertical) Arrangement.Top else Arrangement.Start
-    
     if (vertical) {
         Column(
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = arrangement
+            verticalArrangement = Arrangement.Top // <-- Direct pass kiya type strictness ke liye
         ) {
             VoteContent(
                 score = score,
@@ -46,7 +44,7 @@ fun VoteButtons(
         Row(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = arrangement
+            horizontalArrangement = Arrangement.Start // <-- Direct pass kiya type strictness ke liye
         ) {
             VoteContent(
                 score = score,
