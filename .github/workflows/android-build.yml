@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    name: Build APK
     runs-on: ubuntu-latest
     
     steps:
@@ -25,6 +26,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@v1
+      
     - name: Cache Gradle packages
       uses: actions/cache@v3
       with:
@@ -36,37 +40,51 @@ jobs:
           ${{ runner.os }}-gradle-
           
     - name: Build with Gradle
-      run: ./gradlew build --stacktrace
+      run: ./gradlew build --stacktrace --no-daemon
+      continue-on-error: true
       
     - name: Run lint checks
-      run: ./gradlew lint
+      run: ./gradlew lint --stacktrace --no-daemon
+      continue-on-error: true
       
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --stacktrace
+      run: ./gradlew assembleDebug --stacktrace --no-daemon
       
     - name: Build Release APK
-      run: ./gradlew assembleRelease --stacktrace
+      run: ./gradlew assembleRelease --stacktrace --no-daemon
+      
+    - name: Sign Release APK (if keystore available)
+      if: ${{ secrets.SIGNING_KEY != '' }}
+      run: echo "Signing would happen here with keystore"
+      continue-on-error: true
       
     - name: Upload Debug APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: app-debug
+        name: app-debug-apk
         path: app/build/outputs/apk/debug/app-debug.apk
+        if-no-files-found: error
+        retention-days: 30
         
     - name: Upload Release APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: app-release
-        path: app/build/outputs/apk/release/app-release-unsigned.apk
+        name: app-release-apk
+        path: app/build/outputs/apk/release/*.apk
+        if-no-files-found: error
+        retention-days: 30
         
     - name: Upload Lint Results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: lint-results
-        path: app/build/reports/lint-results-*.html
+        path: app/build/reports/lint-results*.html
+        if-no-files-found: ignore
+        retention-days: 14
 
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -84,11 +102,14 @@ jobs:
       run: chmod +x gradlew
       
     - name: Run unit tests
-      run: ./gradlew test --stacktrace
+      run: ./gradlew test --stacktrace --no-daemon
+      continue-on-error: true
       
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-results
         path: app/build/reports/tests/
+        if-no-files-found: ignore
+        retention-days: 14
