@@ -45,13 +45,14 @@ fun BottomNavigationBar(
                         fontSize = 11.sp
                     )
                 },
-                colors = NavigationBarItemDefaults.colors(
+                                colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant, // <-- Yahan colorScheme missing tha
                     indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                 )
+
             )
         }
     }
