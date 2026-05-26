@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Reddit Clone</string>
+    <string name="home">Home</string>
+    <string name="popular">Popular</string>
+    <string name="communities">Communities</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
+    <string name="search">Search</string>
+    <string name="create_post">Create Post</string>
+    <string name="upvote">Upvote</string>
+    <string name="downvote">Downvote</string>
+    <string name="comment">Comment</string>
+    <string name="share">Share</string>
+    <string name="save">Save</string>
+    <string name="award">Award</string>
+</resources>
