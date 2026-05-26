@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.TrendingUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp  // <-- YEH IMPORT MISSING THA
 import androidx.compose.ui.unit.sp
 import com.reddit.clone.navigation.Screen
 
@@ -48,7 +49,7 @@ fun BottomNavigationBar(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.onSurfaceVariant,
                     indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                 )
             )
