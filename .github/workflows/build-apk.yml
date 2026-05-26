@@ -1,8 +1,8 @@
-name: Build APK
+name: Android Build
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -19,18 +19,25 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # Yeh step automatic fresh Gradle download aur setup karega
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
         gradle-version: '8.2'
-
-    # Hum wrapper script nahi balki seedhe globally installed gradle call karenge
-    - name: Build Debug APK
+      
+    - name: Build Debug
       run: gradle assembleDebug --no-daemon
       
-    - name: Upload APK
+    - name: Build Release
+      run: gradle assembleRelease --no-daemon
+      
+    - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
+        
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
